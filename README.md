@@ -1,5 +1,3 @@
-# NgPhoneFormatter
-
 Install libphonenumber-js via npm
 
 `npm install libphonenumber-js --save`
