@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { parsePhoneNumberFromString, ParseError, AsYouType } from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { Subscription } from 'rxjs';
 
 import { AppService } from './app.component.service';
 import { ICountry } from './app.component.interface';
@@ -10,11 +11,12 @@ import { ICountry } from './app.component.interface';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, OnDestroy {
   selectedCountry: any = 'US';
   selectedPhoneNumber: any;
   countries: any[];
 	register: FormGroup;
+  subscription: Subscription;
 
   constructor(private fb: FormBuilder, private appService: AppService){}
 
@@ -23,8 +25,14 @@ export class AppComponent implements OnInit{
     this.initForm();
   }
 
+  ngOnDestroy(): void {
+    if(this.subscription){
+      this.subscription.unsubscribe();
+    }
+  }
+
   private fetchCountryList(): void {
-    this.appService.getCountries().subscribe((res: ICountry[]) => {
+    this.subscription = this.appService.getCountries().subscribe((res: ICountry[]) => {
 			this.countries = res;
 		}, error => error);
   }
@@ -64,6 +72,7 @@ export class AppComponent implements OnInit{
   formatPhoneNumber(event: any): void {
 		let inputValue: any = this.register.controls['phone'].value;
 		let phoneNumber: any = parsePhoneNumberFromString(inputValue, this.selectedCountry);
+    console.log('phoneNumber', phoneNumber);
 		if(phoneNumber){
 			this.selectedPhoneNumber = phoneNumber.number;
 			this.register.controls['phone'].setValue(phoneNumber.formatInternational());
