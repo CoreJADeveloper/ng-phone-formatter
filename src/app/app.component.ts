@@ -18,24 +18,24 @@ export class AppComponent implements OnInit{
 
   constructor(private fb: FormBuilder, private appService: AppService){}
 
-  ngOnInit(){
+  ngOnInit(): void {
     this.fetchCountryList();
     this.initForm();
   }
 
-  private fetchCountryList(){
+  private fetchCountryList(): void {
     this.appService.getCountries().subscribe((res: ICountry[]) => {
 			this.countries = res;
 		}, error => error);
   }
 
-  private initForm(){
+  private initForm(): void{
     this.register = this.fb.group({
 			phone: ['', [Validators.required, this._validatePhoneNumberInput.bind(this)]]
 		});
   }
 
-  _validatePhoneNumberInput(c: AbstractControl){
+  _validatePhoneNumberInput(c: AbstractControl): object {
     let inputValue: string = c.value.toString();
     let phoneNumber: any = parsePhoneNumberFromString(inputValue, this.selectedCountry);
     if(phoneNumber){
@@ -57,12 +57,11 @@ export class AppComponent implements OnInit{
     }
 	}
 
-
-  resetPhoneNumber(event){
+  resetPhoneNumber(event: any): void {
 		this.register.controls['phone'].setValue('');
 	}
 
-  formatPhoneNumber(event){
+  formatPhoneNumber(event: any): void {
 		let inputValue: any = this.register.controls['phone'].value;
 		let phoneNumber: any = parsePhoneNumberFromString(inputValue, this.selectedCountry);
 		if(phoneNumber){
