@@ -72,7 +72,6 @@ export class AppComponent implements OnInit, OnDestroy {
   formatPhoneNumber(event: any): void {
 		let inputValue: any = this.register.controls['phone'].value;
 		let phoneNumber: any = parsePhoneNumberFromString(inputValue, this.selectedCountry);
-    console.log('phoneNumber', phoneNumber);
 		if(phoneNumber){
 			this.selectedPhoneNumber = phoneNumber.number;
 			this.register.controls['phone'].setValue(phoneNumber.formatInternational());
